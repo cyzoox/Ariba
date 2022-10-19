@@ -456,82 +456,52 @@ export default class ProfileScreen extends Component {
         );*/
     console.log('long press');
   }
-  async sendDirectSms(NumberData, callFor, coords, str) {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.SEND_SMS,
-        {
-          title: 'Ariba App Sms Permission',
-          message:
-            'Ariba App needs access to your inbox ' +
-            'so you can send messages in background.',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        var loopData = '';
-        var i;
+  //async sendDirectSms(NumberData, callFor, coords, str) {
+  //  try {
+   //   const granted = await PermissionsAndroid.request(
+    //    PermissionsAndroid.PERMISSIONS.SEND_SMS,
+    //    {
+    //      title: 'Ariba App Sms Permission',
+      //    message:
+     //       'Ariba App needs access to your inbox ' +
+     //       'so you can send messages in background.',
+       //   buttonNeutral: 'Ask Me Later',
+     //     buttonNegative: 'Cancel',
+//buttonPositive: 'OK',
+     //   },
+    //  );
+    //  if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+    //    var loopData = '';
+     //   var i;
 
-        console.log('NumberData', NumberData);
+      //  console.log('NumberData', NumberData);
         //console.log('arrs', arrs);
         // console.log('joinArrs', joinArrs);
-        var message =
-          this.state.name +
-          ' needs ' +
-          callFor +
-          '. LOC: ' +
-          str +
-          '. Lat: ' +
-          coords.latitude +
-          '. Long: ' +
-          coords.longitude;
-        console.log('message', message);
-        for (i = 0; i < NumberData.length; i++) {
-          loopData += DirectSms.sendDirectSms(NumberData[i], message);
-          console.log('NumberData[i]', NumberData[i]);
+     //   var message =
+     //     this.state.name +
+     //     ' needs ' +
+      //    callFor +
+       //   '. LOC: ' +
+       //   str +
+         // '. Lat: ' +
+          //coords.latitude +
+          //'. Long: ' +
+         // coords.longitude;
+        //console.log('message', message);
+        //for (i = 0; i < NumberData.length; i++) {
+          //loopData += DirectSms.sendDirectSms(NumberData[i], message);
+          //console.log('NumberData[i]', NumberData[i]);
           //       console.log('message:', this.state.name+' needs '+callFor+'. Location: '+joinArrs+'. Lat: '+this.state.coords.latitude+'. Long: '+ this.state.coords.longitude)
-        }
-      } else {
-        console.log('SMS permission denied');
-      }
-    } catch (err) {
-      console.warn(err);
-    }
-  }
+   //     }
+     // } else {
+       // console.log('SMS permission denied');
+     // }
+   // } catch (err) {
+     // console.warn(err);
+   // }
+ // }
 
-  async trySMS() {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.SEND_SMS,
-        {
-          title: 'Ariba App Sms Permission',
-          message:
-            'Ariba App needs access to your inbox ' +
-            'so you can send messages in background.',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('granted');
-
-        // console.log('arr', arr);
-        //console.log('arrs', arrs);
-        // console.log('joinArrs', joinArrs);
-        var message =
-          'standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of ';
-
-        DirectSms.sendDirectSms('09123456789', message);
-      } else {
-        console.log('SMS permission denied');
-      }
-    } catch (err) {
-      console.warn(err);
-    }
-  }
+ 
   async SOSAmbulance() {
     this.setState({SOSMOdal: false});
     Geolocation.getCurrentPosition(
@@ -552,12 +522,12 @@ export default class ProfileScreen extends Component {
                 : res.data.items[0].address.countryCode;
             console.log('short_codes ', short_code);
 
-            this.sendDirectSms(
+         {/*   this.sendDirectSms(
               this.state.NumberAmbulance,
               'Ambulance',
               coords,
               str,
-            );
+         );*/}
             const newDocumentID = firestore().collection('SOS').doc().id;
             firestore()
               .collection('SOS')
@@ -621,8 +591,7 @@ export default class ProfileScreen extends Component {
                 ? 'PH'
                 : res.data.items[0].address.countryCode;
             console.log('short_codes ', short_code);
-
-            this.sendDirectSms(this.state.NumberPolice, 'Police', coords, str);
+{/* this.sendDirectSms(this.state.NumberPolice, 'Police', coords, str);*/}
             const newDocumentID = firestore().collection('SOS').doc().id;
             firestore()
               .collection('SOS')
@@ -687,12 +656,12 @@ export default class ProfileScreen extends Component {
                 : res.data.items[0].address.countryCode;
             console.log('short_codes ', short_code);
 
-            this.sendDirectSms(
+           { /*this.sendDirectSms(
               this.state.NumberFireman,
               'Fireman',
               coords,
               str,
-            );
+           );*/}
             const newDocumentID = firestore().collection('SOS').doc().id;
             firestore()
               .collection('SOS')

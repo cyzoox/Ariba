@@ -66,6 +66,7 @@
     "react-native-reanimated": "^2.10.0",
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "^3.17.0",
+    "react-native-search-filter": "^0.1.5",
     "react-native-segmented-control-tab": "^4.0.0",
     "react-native-select-dropdown": "^2.0.4",
     "react-native-select-multiple": "^2.1.0",

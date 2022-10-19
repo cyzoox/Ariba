@@ -48,7 +48,9 @@ import PhotoGrid from '../components/PhotoGrid';
 import moment from 'moment';
 import {SliderBox} from 'react-native-image-slider-box';
 import { Searchbar } from 'react-native-paper';
+import SearchInput, { createFilter } from 'react-native-search-filter';
 
+const KEYS_TO_FILTERS = ['city'];
 MapboxGL.setAccessToken(
   'sk.eyJ1IjoiY3l6b294IiwiYSI6ImNrdmFxNW5iODBoa2kzMXBnMGRjNXRwNHUifQ.KefOQn1CBBNu-qw1DhPblA',
 );
@@ -138,6 +140,7 @@ export default class HomeScreen extends Component {
       carsAvailable: [],
       cLat: null,
       cLong: null,
+      typedCity:'',
       Prentals: [],
       Vrentals: [],
       selectedCityUser: '',
@@ -723,7 +726,6 @@ export default class HomeScreen extends Component {
     firestore()
       .collection('stores')
       .where('selectedAccount', '==', 'Hotels')
-      .where('arrayofCity', 'array-contains-any', [NewCityItem])
       .onSnapshot(this.onCollectionStoreHotels);
     firestore()
       .collection('stores')
@@ -810,6 +812,7 @@ export default class HomeScreen extends Component {
         });
       });
   };
+
   onErentals = querySnapshot => {
     let Vrentals = [];
     querySnapshot.forEach(doc => {
@@ -1030,6 +1033,7 @@ export default class HomeScreen extends Component {
 
                 this.setState({
                   selectedCityUser: UserLocation,
+                  typedCity: UserLocation,
                   currentLocation: UserLocation,
                   billing_streetTo: res.data.items[0].title,
                   billing_provinceTo: res.data.items[0].address.county,
@@ -2145,6 +2149,10 @@ export default class HomeScreen extends Component {
     //console.log('selectedCityUser Homescreen: ',this.state.selectedCityUser)
     //  console.log('UserLocationCountry typeOfRate: ', this.state.UserLocationCountry)
     //  console.log('CountryNow: ', this.state.CountryNow)
+    const filteredHotels = this.state.HotelList.filter(createFilter(this.state.typedCity, KEYS_TO_FILTERS))
+    const filteredErentals = this.state.Erentals.filter(createFilter(this.state.typedCity, KEYS_TO_FILTERS))
+    const filteredProperty= this.state.storesList.filter(createFilter(this.state.typedCity, KEYS_TO_FILTERS))
+
     const RotateData = this.Rotatevalue.interpolate({
       inputRange: [0, 1],
       outputRange: ['0deg', '368deg'],
@@ -2548,11 +2556,12 @@ export default class HomeScreen extends Component {
            <Searchbar
                placeholder="Search city destination"
                style={{ margin: 10, height: 40, borderRadius: 20}}
+               onChangeText={(e)=> this.setState({typedCity: e})}
                inputStyle={{padding: 0, fontSize: 15}}
 
              />
          </View>
-          <View style={{flexDirection: 'row', marginLeft: 15}}>
+          <View style={{flexDirection: 'row', marginLeft: 5}}>
             <TouchableOpacity
               style={{
                 shadowColor: '#000',
@@ -2563,7 +2572,7 @@ export default class HomeScreen extends Component {
                 shadowOpacity: 0.58,
                 shadowRadius: 16.0,
                 elevation: 24,
-                width: (SCREEN_WIDTH - 50) / 3,
+                width: (SCREEN_WIDTH - 100) / 3,
                 backgroundColor:
                   this.state.selectedIndexRentals == 0 ? '#1c9fef' : 'white',
                 borderRadius: 15,
@@ -2599,14 +2608,14 @@ export default class HomeScreen extends Component {
                 shadowOpacity: 0.58,
                 shadowRadius: 16.0,
                 elevation: 24,
-                width: (SCREEN_WIDTH - 50) / 3,
+                width: (SCREEN_WIDTH - 120) / 3,
                 backgroundColor:
                   this.state.selectedIndexRentals == 1 ? '#1c9fef' : 'white',
                 borderRadius: 15,
                 padding: 5,
                 flexDirection: 'row',
-                marginLeft: 10,
-                marginRight: 10,
+                marginLeft: 3,
+                marginRight: 3,
               }}
               onPress={() => this.setState({selectedIndexRentals: 1})}>
               <MaterialIcons
@@ -2638,7 +2647,45 @@ export default class HomeScreen extends Component {
                 shadowOpacity: 0.58,
                 shadowRadius: 16.0,
                 elevation: 24,
-                width: (SCREEN_WIDTH - 50) / 3,
+                width: (SCREEN_WIDTH - 100) / 3,
+                backgroundColor:
+                  this.state.selectedIndexRentals == 2 ? '#1c9fef' : 'white',
+                borderRadius: 15,
+                padding: 5,
+                flexDirection: 'row',
+            
+                marginRight: 3,
+              }}
+              onPress={() => this.setState({selectedIndexRentals: 2})}>
+              <FontAwesome5
+                name={'tools'}
+                size={15}
+                color={
+                  this.state.selectedIndexRentals == 2 ? 'white' : '#5580ad'
+                }
+              />
+              <Text
+                style={{
+                  color:
+                    this.state.selectedIndexRentals == 2 ? 'white' : 'black',
+                  fontSize: 13,
+                  fontWeight: 'bold',
+                }}>
+                {' '}
+                Equipment
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                shadowColor: '#000',
+                shadowOffset: {
+                  width: 0,
+                  height: 12,
+                },
+                shadowOpacity: 0.58,
+                shadowRadius: 16.0,
+                elevation: 24,
+                width: (SCREEN_WIDTH - 50) / 3.9,
                 backgroundColor:
                   this.state.selectedIndexRentals == 3 ? '#1c9fef' : 'white',
                 borderRadius: 15,
@@ -2646,22 +2693,17 @@ export default class HomeScreen extends Component {
                 flexDirection: 'row',
               }}
               onPress={() => this.setState({selectedIndexRentals: 3})}>
-              <FontAwesome5
-                name={'tools'}
+              <MaterialIcons
+                name={'local-taxi'}
                 size={15}
-                color={
-                  this.state.selectedIndexRentals == 3 ? 'white' : '#5580ad'
-                }
+                color={this.state.selectedIndexRentals == 3 ? 'white' : '#5580ad'}
               />
               <Text
                 style={{
-                  color:
-                    this.state.selectedIndexRentals == 3 ? 'white' : 'black',
-                  fontSize: 13,
+                  color: this.state.selectedIndexRentals == 3 ? 'white' : 'black',
                   fontWeight: 'bold',
                 }}>
-                {' '}
-                Equipment
+                Car Rent
               </Text>
             </TouchableOpacity>
           </View>
@@ -3116,7 +3158,7 @@ export default class HomeScreen extends Component {
               <FlatList
                 key={'2'}
                 style={{height: SCREEN_HEIGHT / 2, marginBottom:350}}
-                data={this.state.HotelList.sort(
+                data={filteredHotels.sort(
                   (a, b) => Number(b.arrange) - Number(a.arrange),
                 ).sort((a, b) => a.distance - b.distance)}
                 renderItem={({item}) => (
@@ -3761,7 +3803,7 @@ export default class HomeScreen extends Component {
               <FlatList
                 key={'3'}
                 style={{height: SCREEN_HEIGHT / 1.7, marginBottom:350}}
-                data={this.state.storesList}
+                data={filteredProperty}
                 renderItem={({item}) => (
                   <Box style={{
                     marginTop: 10,
@@ -4416,10 +4458,10 @@ export default class HomeScreen extends Component {
                 refreshing={this.state.loading}
                 onRefresh={this.getData}
               />
-            ) : (
+            ) :this.state.selectedIndexRentals == 2 ? (
               <FlatList
                 key={'#'}
-                data={this.state.Erentals}
+                data={filteredErentals}
                 ItemSeparatorComponent={this.ListViewItemSeparator}
                 renderItem={({item}) => this.rowRendererErentals(item)}
                 enableEmptySections={true}
@@ -4430,6 +4472,20 @@ export default class HomeScreen extends Component {
                 refreshing={this.state.loading}
                 onRefresh={this.getData}
               />
+            ): (
+              <FlatList
+              key={'_'}
+              data={this.state.Vrentals}
+              ItemSeparatorComponent={this.ListViewItemSeparator}
+              renderItem={({item}) => this.rowRendererVrentals(item)}
+              enableEmptySections={true}
+              style={{height: SCREEN_HEIGHT / 2,  marginBottom: 500}}
+              numColumns={2}
+              columnWrapperStyle={{justifyContent: 'space-between'}}
+              keyExtractor={(item, index) => index.toString()}
+              refreshing={this.state.loading}
+              onRefresh={this.getData}
+            />
             )}
           </View>
         ) : this.state.selectedIndex == 2 ? (
@@ -4456,20 +4512,6 @@ export default class HomeScreen extends Component {
                   onRefresh={this.getData}
                 />
               
-              ) : this.state.transportSelected == 0 ? (
-                <FlatList
-                  key={'_'}
-                  data={this.state.Vrentals}
-                  ItemSeparatorComponent={this.ListViewItemSeparator}
-                  renderItem={({item}) => this.rowRendererVrentals(item)}
-                  enableEmptySections={true}
-                  style={{height: SCREEN_HEIGHT / 2,  marginBottom: 500}}
-                  numColumns={2}
-                  columnWrapperStyle={{justifyContent: 'space-between'}}
-                  keyExtractor={(item, index) => index.toString()}
-                  refreshing={this.state.loading}
-                  onRefresh={this.getData}
-                />
               ) : (
                 <FlatList
                   key={'8'}
@@ -4650,7 +4692,7 @@ export default class HomeScreen extends Component {
               onPress={() => {
                 this.setState({VisibleAddInfo: false});
                 this.state.transportSelected == 0 ||
-                this.state.selectedIndexRentals == 3
+                this.state.selectedIndexRentals == 2
                   ? this.props.navigation.navigate('CheckoutScreenEquipment', {
                       datas: this.state.vInfos,
                       typeOfRate: this.state.typeOfRate,
